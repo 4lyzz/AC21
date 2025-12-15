@@ -6,10 +6,10 @@ internal class Program
 
     static string[] naves = new string[100]; //aquí almacenaremos las naves creadas(requisitos técnicos)
 
-    // Usaremos ""  como cadena vacía para indicar que una posición del array no está ocupada por una nave.
+    //Usaremos ""  como cadena vacía para indicar que una posición del array no está ocupada por una nave.
 
 
-    static Random random = new Random(); // Generador de nombres aleatorios, tal y como pides en los requisitos técnicos.
+    static Random random = new Random(); //Generador de nombres aleatorios, tal y como pides en los requisitos técnicos.
 
     static string[] modelos = { "HALCONMILENARIO", "CAZAESTELAR", "SUPERDESTRUCTOR", "YWING", "XWING" }; // Modelos de naves disponibles para creación
 
@@ -58,7 +58,7 @@ internal class Program
                 break;
 
                 case 3:
-                Console.WriteLine("Función 3(Listar todas las naves).");
+                ListarNaves(contadorNaves);  //TODO OK, este método ya está hecho más abajo.
                 break;
 
                 case 4:
@@ -86,14 +86,14 @@ internal class Program
     }
 
     //---->MÉTODOS AQUÍ<------
-    //OPCIÓN 1: CREAR NUEVA NAVE:
+    // OPCIÓN 1: CREAR NUEVA NAVE:
 
     private static void CrearNuevaNave(ref int contadorNaves)
     {
         // 1) VALIDACIÓN: comprobamos que todavía hay espacio en el array para guardar otra nave.
         if (contadorNaves >= naves.Length) // Hemos validado si el array está lleno para evitar escribir fuera de rango.
         {
-            Console.WriteLine("✗ No se pueden crear más naves. El almacén está lleno.");
+            Console.WriteLine("No se pueden crear más naves. El almacén está lleno.");
             return; // Salimos del método si no se pueden crear más naves.
         }
 
@@ -113,8 +113,8 @@ internal class Program
 
     private static string GenerarNombreUnico(int contadorNaves)
     {
-        string nombre; // Variable para almacenar el nombre generado.
-        bool repetido; // Variable para controlar si el nombre ya existe.
+        string nombre; //Variable para almacenar el nombre generado.
+        bool repetido; //Variable para controlar si el nombre ya existe.
 
         do
         {
@@ -129,16 +129,47 @@ internal class Program
 
             for (int i = 0; i < contadorNaves; i++)
             {
-                if (naves[i] == nombre) // Comparamos con las naves ya creadas.
+                if (naves[i] == nombre) //Comparamos con las naves ya creadas.
                 {
                     repetido = true;
-                    break; // Salimos del bucle si encontramos un nombre repetido.
+                    break; //Salimos del bucle si encontramos un nombre repetido.
                 }
             }
 
-        }while (repetido); // Repetimos hasta que encontremos un nombre único.
+        }while (repetido); //Repetimos hasta que encontremos un nombre único.
 
-        return nombre; // Devolvemos el nombre único generado.
+        return nombre; //Devolvemos el nombre único generado.
     }
 
+
+    // OPCIÓN 2: CAMBIAR NOMBRE DE UNA NAVE (LIZ) -------->
+
+
+
+
+
+
+    // OPCIÓN 3: LISTAR NAVES
+    private static void ListarNaves(int contadorNaves, string titulo = "=== NAVES FABRICADAS ===")
+    //Lo hacemos así con el título porque pedías que se pasara por parámetro opcional.
+    {
+        Console.WriteLine(titulo); // Mostramos el título pasado por parámetro.
+
+        if (contadorNaves == 0)
+        {
+            Console.WriteLine("No hay naves creadas.");
+            return; // Salimos del método si no hay naves.
+        }
+
+        // Listamos todas las naves creadas hasta el contadorNaves.
+        for (int i = 0; i < contadorNaves; i++)
+        {
+            Console.WriteLine("[" + i + "] " + naves[i]); // Listamos las naves con su índice.
+        }
+        
+    }
+
+    // OPCIÓN 4: ELIMINAR UNA NAVE (SANA)----->
+
 }
+
