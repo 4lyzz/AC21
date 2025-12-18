@@ -56,16 +56,17 @@ internal class Program
                 case 2:
                 CambiarNombreNave(contadorNaves);
                 break;  //-->LIZ! Aquí va tu primera función :) 
+                
                 case 3:
                 ListarNaves(contadorNaves);  //TODO OK, este método ya está hecho más abajo.
                 break;
 
                 case 4:
-                Console.WriteLine("Función 4(Eliminar una nave).");
+                EliminarNave(ref contadorNaves); //Llamada al método 
                 break;
 
                 case 5:
-                Console.WriteLine("Función 5(Eliminar todas las naves).");
+                EliminarTodas(ref contadorNaves);
                 break;
                 
                 case 6:
@@ -143,34 +144,44 @@ internal class Program
 
     // OPCIÓN 2: CAMBIAR NOMBRE DE UNA NAVE (LIZ) -------->
 
-private static void CambiarNombreNave(int contadorNaves)
-{
-    if (contadorNaves == 0)
+   private static void CambiarNombreNave(int contadorNaves)
+   {
+    if (contadorNaves == 0) // Hemos comprobado si hay naves creadas, porque no se puede renombrar si el contador es 0.
     {
         Console.WriteLine("No hay naves para renombrar.");
         return;
     }
 
-    ListarNaves(contadorNaves, "=== NAVES DISPONIBLES ===");
+    // Con esta opción listamos las naves disponibles para que el usuario pueda elegir cuál renombrar, si quiere verlas en la misma opción 2.
+    //No obstante, como ya tenemos la opción 3, y no queremos ser repetitivas, vamos a comentarla:
+    //ListarNaves(contadorNaves, "=== NAVES DISPONIBLES ===");
 
-    Console.Write("Ingrese el índice de la nave a renombrar: ");
+    Console.Write("Ingrese el índice de la nave a renombrar: "); // Pedimos el índice porque el enunciado indica que la nave se identifica por su índice.
     int indice;
-    bool esNumero = int.TryParse(Console.ReadLine(), out indice);
+    bool esNumero = int.TryParse(Console.ReadLine(), out indice); // TryParse evita errores si el usuario no escribe un número
+    // out guarda el valor convertido en indice.
 
-    if (!esNumero || indice < 0 || indice >= contadorNaves)
+    if (!esNumero || indice < 0 || indice >= contadorNaves) // Validamos que el índice sea número y esté dentro del rango
     {
         Console.WriteLine("Índice inválido.");
         return;
     }
 
-    Console.Write("Ingrese el nuevo nombre: ");
+    Console.Write("Ingrese el nuevo nombre: "); // Pedimos el nuevo nombre para la nave.
     string nuevoNombre = Console.ReadLine();
 
-    string nombreAnterior = naves[indice];
-    naves[indice] = nuevoNombre;
+    // Nombre no nulo ni con cadena vacía, para evitar nombres inválidos.
+    if (nuevoNombre == null || nuevoNombre == "")
+    {
+        Console.WriteLine("Nombre inválido.");
+        return;
+    }
 
-    Console.WriteLine($"✓ Nave renombrada: {nombreAnterior} → {nuevoNombre}");
-}
+    string nombreAnterior = naves[indice]; // Guardamos el nombre anterior para el mensaje informativo.
+    naves[indice] = nuevoNombre; // Actualizamos el nombre de la nave en el array.
+
+    Console.WriteLine($"✓ Nave renombrada: {nombreAnterior} → {nuevoNombre}"); // Mensaje informativo del cambio.
+   }
 
 
 
@@ -195,7 +206,76 @@ private static void CambiarNombreNave(int contadorNaves)
         
     }
 
-    // OPCIÓN 4: ELIMINAR UNA NAVE (SANA)----->
+    // OPCIÓN 4: ELIMINAR UNA NAVE----->
+    private static void EliminarNave(ref int contadorNaves)
+    {
+        if (contadorNaves == 0)
+        {
+            Console.WriteLine("¡No hay naves! No se puede eliminar ninguna.");
+            return;
+        }
 
+
+        Console.Write("Ingrese el índice de la nave a eliminar: "); //La nave se identifica por su índice.
+        int indice;
+        bool esNumero = int.TryParse(Console.ReadLine(), out indice); // TryParse evita errores si el usuario no escribe un número, como en opción 2.
+
+
+        if (!esNumero || indice < 0 || indice >= contadorNaves) // Validamos que el índice sea número y esté dentro del rango
+        {
+            Console.WriteLine("Índice inválido.");
+            return;
+        }
+
+        string eliminada = naves[indice]; // Guardamos el nombre de la nave eliminada para el mensaje informativo.
+        
+        //Esto es lógico, ya que si eliminamos una nave, no debería apareceer más su índice en el listado.
+        for (int i = indice; i < contadorNaves - 1; i++) 
+        {
+            naves[i] = naves[i + 1]; // Desplazamos las naves hacia la izquierda para llenar el hueco.
+            //¿Qué significa esto? Que la nave que estaba en la posición "indice + 1" pasa a estar en la posición "indice", y así sucesivamente.
+        }
+
+        naves[contadorNaves - 1] = ""; // Limpiamos la última posición del array. Porque ahora hay una nave menos.
+
+        contadorNaves--; // Disminuimos el contador de naves. Importante.
+
+        Console.WriteLine("✓ Nave eliminada: " + eliminada); // Mensaje informativo de la eliminación.
+    
+    }
+
+
+
+    // OPCIÓN 5: ELIMINAR TODAS LAS NAVES ----->
+
+    private static void EliminarTodas(ref int contadorNaves, bool confirmar = true) //Parámetro de confirmación opcional.
+    {
+        if (contadorNaves == 0)
+        {
+            Console.WriteLine("¡No hay naves! No se puede eliminar ninguna.");
+            return;
+        }
+
+        if (confirmar)  //Parámetro opcional para confirmar la eliminación masiva.
+        {
+            Console.Write("¿Está seguro de que desea eliminar todas las naves? (S/N): ");
+            string respuesta = Console.ReadLine();
+
+            if (respuesta != "S" && respuesta != "s") //Evitamos eliminar si la respuesta no es afirmativa.
+            {
+                Console.WriteLine("Operación cancelada.");
+                return;
+            }
+        }
+
+        for (int i = 0; i < contadorNaves; i++)
+        {
+            naves[i] = ""; // Limpiamos todas las posiciones del array.
+        }
+
+        contadorNaves = 0; // Reseteamos el contador de naves.
+
+        Console.WriteLine("✓ Se han eliminado todas las naves.");
+
+    }
 }
-
